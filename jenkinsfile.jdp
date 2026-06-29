@@ -1,0 +1,49 @@
+
+pipeline {
+    agent any
+    stages {
+        stage ('PULL'){
+            steps {
+                git branch: 'devops', url: 'https://github.com/jambhulkarcloudblitz-alt/CDEC-studentapp.git'
+            }
+        }
+    stage ('BUILD'){
+            steps {
+                sh '''cd backend 
+                    mvn clean package -DskipTests'''
+            }
+        }
+
+    stage ('TEST') {
+         steps {
+                sh '''cd backend 
+                mvn  sonar:sonar \
+                -Dsonar.projectKey=studentapp \
+                -Dsonar.projectName='studentapp' \
+                -Dsonar.host.url=http://13.126.134.70:9000 \
+                -Dsonar.token=sqp_7e600c202a0692503f29efaafad07cf5fa91a310'''
+            }
+    }
+
+
+    stage ('TEST') {
+       steps {
+        withSonarQubeEnv(installationName: 'soanrqube' ,credentialsId: 'sonar-cred') {
+        
+                    sh '''cd backend
+                  mvn sonar:sonar -Dsonar.projectKey=studentapp'''
+        }
+       }
+    } 
+
+
+    stage ('TEST-QUALITY') {
+        steps {
+             timeout(10) {
+                waitForQualityGate abortPipeline: false, credentialsId: 'sonar-cred'
+             }
+        }
+    }
+
+    }
+}    
