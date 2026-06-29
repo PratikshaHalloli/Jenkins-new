@@ -26,9 +26,9 @@ pipeline {
     }
 
 
-    stage ('TEST') {
+    stage ('TEST-SONAR') {
        steps {
-        withSonarQubeEnv(installationName: 'soanrqube' ,credentialsId: 'sonar-cred') {
+        withSonarQubeEnv(installationName: 'sonarqube' ,credentialsId: 'sonar-cred') {
         
                     sh '''cd backend
                   mvn sonar:sonar -Dsonar.projectKey=studentapp'''
@@ -40,7 +40,7 @@ pipeline {
     stage ('TEST-QUALITY') {
         steps {
              timeout(10) {
-                waitForQualityGate abortPipeline: false, credentialsId: 'sonar-cred'
+                waitForQualityGate abortPipeline: true , credentialsId: 'sonar-cred'
              }
         }
     }
