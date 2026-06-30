@@ -19,7 +19,7 @@ pipeline{
 
         stage ('APPROVAL') {
             steps {
-                sh 'shall we procced ok : Approve'
+                input 'shall we proceed ok : Approve '
             }
         }
 
