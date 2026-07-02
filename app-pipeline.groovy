@@ -49,12 +49,16 @@ pipeline {
 
         stage ('DEPLOY-TO-EKS') {
              steps {
+                 withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
+
                 sh '''
                    aws eks update-kubeconfig --name my-eks --region ap-south-1
                     kubectl apply -f simple-deploy/ 
                       '''
-                 }
+                } 
             }
+        }
 
 
 
