@@ -2,6 +2,21 @@
 
 pipeline {
     agent any 
+      parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'staging', 'uat'],
+            description: 'Select target environment'
+        )
+    }
+
+    environment {
+        IMAGE_TAG = "${params.ENVIRONMENT}-latest"
+    }
+
+
+
+
     stages {
         stage ('PULL') {
             steps{
